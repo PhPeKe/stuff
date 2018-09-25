@@ -1,0 +1,2 @@
+print("Call different script")
+
