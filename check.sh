@@ -4,7 +4,7 @@ while true
 do
 	#clear
 	sleep 1m
-	echo "-----------------------------------------------checking..."
+	echo "check:------------------------------------------checking..."
 	grep "Manager has exited with status code 1" output.txt #&> /dev/null
 	if [ $? == 0 ] 
 	then
@@ -15,9 +15,23 @@ do
 		echo "Restarting..."
 		bash start.sh&
 		echo "Restarted!"
-		kill $$
+		kill -9 $$
 		break
 	else
-		echo "-----------------------------------------------NO ERROR FOUND"
+		echo "check:------------------------------------------NO ERROR FOUND" >output.txt
+		sleep 1m
+	fi
+	tail -1 output.txt | grep "check:" #&> /dev/null
+	if [ $? == 0 ] 
+	then
+		echo "-----------------------------------------------TIMED OUT!"
+		echo "THERE WAS AN ERROR" > elog.txt
+		bash kill.sh
+		rm output.txt
+		echo "Restarting..."
+		bash start.sh&
+		echo "Restarted!"
+		kill -9 $$
+		break
 	fi
 done
